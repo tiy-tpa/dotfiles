@@ -8,27 +8,51 @@
     followSymlinks: false
     hideGitIgnoredFiles: true
     ignoredNames: [
-      ".bundle"
       ".git"
-      "log"
-      "repositories"
-      "tmp"
-      "vendor"
+      ".hg"
+      ".svn"
+      ".DS_Store"
+      "Thumbs.db"
+      ".codekit-cache"
+      "bower_components"
+      "._*"
     ]
-    themes: [
-      "unity-ui"
-      "glacier-syntax"
-    ]
+    telemetryConsent: "limited"
   editor:
-    fontFamily: "Menlo"
-    fontSize: 15
-    invisibles: {}
+    invisibles:
+      space: " "
+    fontFamily: "Hack"
+    fontSize: 13
+    preferredLineLength: 120
+    scrollPastEnd: true
     showIndentGuide: true
+    showInvisibles: true
     softWrapAtPreferredLineLength: true
-  "go-plus":
-    goPath: "/Users/holman/Code/go"
+    softWrapHangingIndent: 2
+    zoomFontWhenCtrlScrolling: true
   "linter-eslint":
-    useGlobalEslint: true
+    disableWhenNoEslintConfig: false
+    disableWhenNoEslintrcFileInPath: false
+    fixOnSave: true
+    globalNodePath: "/Users/ambethia/.node"
+    showRuleIdInMessage: false
+  "linter-glsl": {}
+  "linter-js-standard":
+    lintMarkdownFiles: true
+  "linter-jscs":
+    onlyConfig: true
+  "linter-less": {}
+  "linter-rubocop": {}
+  "linter-stylelint":
+    useStandard: true
+  "linter-stylint":
+    onlyRunWhenConfig: true
+  "markdown-preview":
+    useGitHubStyle: true
+  "markdown-writer":
+    relativeImagePath: true
+    siteEngine: "html"
+    tableAlignment: "left"
   "release-notes":
     viewedVersion: "0.89.0"
   "spell-check":
@@ -38,5 +62,9 @@
       "text.git-commit"
       "text.html.basic"
     ]
+  "tree-view":
+    hideIgnoredNames: true
+    hideVcsIgnoredFiles: true
+    squashDirectoryNames: true
   welcome:
     showOnStartup: false

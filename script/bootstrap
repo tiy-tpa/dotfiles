@@ -3,7 +3,7 @@
 # bootstrap installs things.
 
 cd "$(dirname "$0")/.."
-DOTFILES_ROOT=$(pwd -P)
+DOTFILES_ROOT="$(pwd -P)"
 
 set -e
 
@@ -130,27 +130,93 @@ install_dotfiles () {
 
   local overwrite_all=false backup_all=false skip_all=false
 
+  local old_ifs="${IFS}"
+  IFS=$(echo -en "\n\b")
   for src in $(find -H "$DOTFILES_ROOT" -maxdepth 2 -name '*.symlink' -not -path '*.git*')
   do
     dst="$HOME/.$(basename "${src%.*}")"
     link_file "$src" "$dst"
   done
+  IFS="${old_ifs}"
+}
+
+install_preferences () {
+  info 'installing preferences'
+
+  local overwrite_all=false backup_all=false skip_all=false
+
+  local old_ifs="${IFS}"
+  IFS=$(echo -en "\n\b")
+  for directory in $(find -H "$DOTFILES_ROOT" -maxdepth 2 -type d -name Preferences); do
+    for preference in $(find -H "${directory}" -type f); do
+      dst="$HOME/Library/Preferences/$(basename "${preference}")"
+      link_file "$preference" "$dst"
+    done
+  done
+  IFS="${old_ifs}"
+}
+
+setup_oh_my_zsh () {
+  if [ ! -d ~/.oh-my-zsh ]; then
+    info 'installing oh my zsh'
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | grep -v 'env zsh')"
+    chmod og-rwx /usr/local/share/zsh/site-functions
+    chmod og-rwx /usr/local/share/zsh
+    info 'done installing oh my zsh'
+
+    # Put back any zsh related dotfiles
+    rm -f ~/.zshrc
+    install_dotfiles
+  fi
+
+  if [ "$(finger ${USER} | grep Shell: | awk '{print $NF}')" != "/usr/local/bin/zsh" ]; then
+    info 'Setting user to use brew zsh'
+    if ! grep -q /usr/local/bin/zsh /etc/shells; then
+      echo "/usr/local/bin/zsh" | sudo tee -a /etc/shells
+    fi
+
+    chsh -s /usr/local/bin/zsh
+
+    # Ensure there is a Z history file
+    touch ~/.z
+  fi
+}
+
+dot () {
+  # Set macOS defaults
+  $DOTFILES_HOME/macos/set-defaults.sh
+  
+  # Install homebrew
+  $DOTFILES_HOME/homebrew/install.sh 2>&1
+  
+  # Upgrade homebrew
+  info "brew update"
+  brew update
+  
+  # Install software
+  info "$DOTFILES_HOME/script/install"
+
+  # Run Homebrew through the Brewfile
+  info "brew bundle"
+  brew bundle
+  
+  # find the installers and run them iteratively
+  find . -name install.sh | while read installer ; do sh -c "${installer}" ; done
 }
 
 setup_gitconfig
 install_dotfiles
+install_preferences
 
-# If we're on a Mac, let's install and setup homebrew.
-if [ "$(uname -s)" == "Darwin" ]
+info "installing dependencies"
+if dot 2>&1
 then
-  info "installing dependencies"
-  if source bin/dot > /tmp/dotfiles-dot 2>&1
-  then
-    success "dependencies installed"
-  else
-    fail "error installing dependencies"
-  fi
+  success "dependencies installed"
+else
+  fail "error installing dependencies"
 fi
+
+setup_oh_my_zsh
 
 echo ''
 echo '  All installed!'

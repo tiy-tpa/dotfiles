@@ -1,48 +1,67 @@
 #!/usr/bin/ruby
 require 'irb/completion'
 require 'irb/ext/save-history'
-require 'rubygems'
 
+def require_gems(gems)
+  gems.each do |gem|
+    begin
+      # If we are using bundler then we have to
+      # make sure we have this gem's path loaded
+      if defined?(::Bundler)
+        Gem.path.each do |path|
+          $LOAD_PATH.concat Dir.glob("#{path}/gems/#{gem}*/lib")
+        end
+      end
+      require gem
+    rescue LoadError
+    end
+  end
+end
+
+require_gems %w{awesome_print hirb}
+
+# Keep an IRB history
 IRB.conf[:SAVE_HISTORY] = 1000
 IRB.conf[:HISTORY_FILE] = "#{ENV['HOME']}/.irb_history"
 
+# Simple prompt mode
 IRB.conf[:PROMPT_MODE] = :SIMPLE
 
-IRB.conf[:AUTO_INDENT] = true
+# Configure awesome print if available
+if defined?(AwesomePrint)
+  AwesomePrint.irb!
 
-class Object
-  # list methods which aren't in superclass
-  def local_methods(obj = self)
-    (obj.methods - obj.class.superclass.instance_methods).sort
-  end
-
-  # print documentation
-  #
-  #   ri 'Array#pop'
-  #   Array.ri
-  #   Array.ri :pop
-  #   arr.ri :pop
-  def ri(method = nil)
-    unless method && method =~ /^[A-Z]/ # if class isn't specified
-      klass = self.kind_of?(Class) ? name : self.class.name
-      method = [klass, method].compact.join('#')
-    end
-    puts `ri '#{method}'`
-  end
+  AwesomePrint.defaults = {
+    plain: false,
+    color: {
+      hash:       :pale,
+      class:      :white,
+      bigdecimal: :yellow,
+      fixnum:     :yellow,
+      symbol:     :yellow
+    },
+    indent: -2
+  }
 end
 
-# Copies the result of the last operation you ran in IRB to the system
-# clipboard (if you're on macOS).
-def cop
-  last_value = IRB.CurrentContext.last_value
-  %x[echo '#{last_value}' | pbcopy]
-  "copied \`#{last_value}' to your clipboard"
+# Enable hirb for rails output awesomeness
+if defined?(Hirb)
+  Hirb.enable
 end
 
-def me
-  User.find_by_login(ENV['USER'].strip)
+# If we are in Rails
+if ENV['RAILS_ENV'] || defined?(Rails)
+  # Customize the IRB prompt
+  app_name = Rails.application.class.parent_name.downcase
+  app_env  = Rails.env[0...3]
+
+  IRB.conf[:PROMPT] ||= {}
+  IRB.conf[:PROMPT][:RAILS] = {
+    PROMPT_I: "#{app_name}> ",
+    PROMPT_S: "#{app_name}* ",
+    PROMPT_C: "#{app_name}? ",
+    RETURN: "=> %s\n"
+  }
+  IRB.conf[:PROMPT_MODE] = :RAILS
 end
 
-def r
-  reload!
-end
