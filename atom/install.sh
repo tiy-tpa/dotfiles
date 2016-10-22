@@ -8,4 +8,4 @@ for package in linter file-icons pigments color-picker emmet git-plus language-b
   fi
 done
 
-apm stars --install
+# apm stars --install
