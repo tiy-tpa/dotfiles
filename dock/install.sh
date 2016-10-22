@@ -4,7 +4,7 @@ if which -s dockutil; then
     dockutil --add "/Applications/Google Chrome.app"
   fi
 
-  if ! dockutil --list | grep -q "Google Chrome"; then
+  if ! dockutil --list | grep -q "iTerm"; then
     info "Adding iTerm to the dock"
     dockutil --add /Applications/iTerm.app
   fi
