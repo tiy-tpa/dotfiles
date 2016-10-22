@@ -1,21 +1,222 @@
-#!/bin/sh
+#!/usr/bin/env bash
 #
-# dot
-#
-# `dot` handles installation, updates, things like that. Run it periodically
-# to make sure you're on the latest and greatest.
-export DOTFILES_HOME=$HOME/.dotfiles
+# bootstrap installs things.
 
-# Set macOS defaults
-$DOTFILES_HOME/macos/set-defaults.sh
+cd "$(dirname "$0")/.."
+DOTFILES_ROOT="$(pwd -P)"
 
-# Install homebrew
-$DOTFILES_HOME/homebrew/install.sh 2>&1
+set -e
 
-# Upgrade homebrew
-echo "› brew update"
-brew update
+echo ''
 
-# Install software
-echo "› $DOTFILES_HOME/script/install"
-$DOTFILES_HOME/script/install
+info () {
+  printf "\r  [ \033[00;34m..\033[0m ] $1\n"
+}
+
+user () {
+  printf "\r  [ \033[0;33m??\033[0m ] $1\n"
+}
+
+success () {
+  printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
+}
+
+fail () {
+  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
+  echo ''
+  exit
+}
+
+setup_gitconfig () {
+  if ! [ -f git/gitconfig.local.symlink ]
+  then
+    info 'setup gitconfig'
+
+    git_credential='cache'
+    if [ "$(uname -s)" == "Darwin" ]
+    then
+      git_credential='osxkeychain'
+    fi
+
+    user ' - What is your github author name?'
+    read -e git_authorname
+    user ' - What is your github author email?'
+    read -e git_authoremail
+
+    sed -e "s/AUTHORNAME/$git_authorname/g" -e "s/AUTHOREMAIL/$git_authoremail/g" -e "s/GIT_CREDENTIAL_HELPER/$git_credential/g" git/gitconfig.local.symlink.example > git/gitconfig.local.symlink
+
+    success 'gitconfig'
+  fi
+}
+
+
+link_file () {
+  local src=$1 dst=$2
+
+  local overwrite= backup= skip=
+  local action=
+
+  if [ -f "$dst" -o -d "$dst" -o -L "$dst" ]
+  then
+
+    if [ "$overwrite_all" == "false" ] && [ "$backup_all" == "false" ] && [ "$skip_all" == "false" ]
+    then
+
+      local currentSrc="$(readlink $dst)"
+
+      if [ "$currentSrc" == "$src" ]
+      then
+
+        skip=true;
+
+      else
+
+        user "File already exists: $dst ($(basename "$src")), what do you want to do?\n\
+        [s]kip, [S]kip all, [o]verwrite, [O]verwrite all, [b]ackup, [B]ackup all?"
+        read -n 1 action
+
+        case "$action" in
+          o )
+            overwrite=true;;
+          O )
+            overwrite_all=true;;
+          b )
+            backup=true;;
+          B )
+            backup_all=true;;
+          s )
+            skip=true;;
+          S )
+            skip_all=true;;
+          * )
+            ;;
+        esac
+
+      fi
+
+    fi
+
+    overwrite=${overwrite:-$overwrite_all}
+    backup=${backup:-$backup_all}
+    skip=${skip:-$skip_all}
+
+    if [ "$overwrite" == "true" ]
+    then
+      rm -rf "$dst"
+      success "removed $dst"
+    fi
+
+    if [ "$backup" == "true" ]
+    then
+      mv "$dst" "${dst}.backup"
+      success "moved $dst to ${dst}.backup"
+    fi
+
+    # if [ "$skip" == "true" ]
+    # then
+    #   success "skipped $src"
+    # fi
+  fi
+
+  if [ "$skip" != "true" ]  # "false" or empty
+  then
+    ln -s "$1" "$2"
+    success "linked $1 to $2"
+  fi
+}
+
+install_dotfiles () {
+  info 'installing dotfiles'
+
+  local overwrite_all=false backup_all=false skip_all=false
+
+  local old_ifs="${IFS}"
+  IFS=$(echo -en "\n\b")
+  for src in $(find -H "$DOTFILES_ROOT" -maxdepth 2 -name '*.symlink' -not -path '*.git*')
+  do
+    dst="$HOME/.$(basename "${src%.*}")"
+    link_file "$src" "$dst"
+  done
+  IFS="${old_ifs}"
+}
+
+install_preferences () {
+  info 'installing preferences'
+
+  local overwrite_all=false backup_all=false skip_all=false
+
+  local old_ifs="${IFS}"
+  IFS=$(echo -en "\n\b")
+  for directory in $(find -H "$DOTFILES_ROOT" -maxdepth 2 -type d -name Preferences); do
+    for preference in $(find -H "${directory}" -type f); do
+      dst="$HOME/Library/Preferences/$(basename "${preference}")"
+      link_file "$preference" "$dst"
+    done
+  done
+  IFS="${old_ifs}"
+}
+
+setup_oh_my_zsh () {
+  if [ ! -d ~/.oh-my-zsh ]; then
+    info 'installing oh my zsh'
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | grep -v 'env zsh')"
+    chmod og-rwx /usr/local/share/zsh/site-functions
+    chmod og-rwx /usr/local/share/zsh
+    info 'done installing oh my zsh'
+
+    # Put back any zsh related dotfiles
+    rm -f ~/.zshrc
+    install_dotfiles
+  fi
+
+  if [ "$(finger ${USER} | grep Shell: | awk '{print $NF}')" != "/usr/local/bin/zsh" ]; then
+    info 'Setting user to use brew zsh'
+    if ! grep -q /usr/local/bin/zsh /etc/shells; then
+      echo "/usr/local/bin/zsh" | sudo tee -a /etc/shells
+    fi
+
+    chsh -s /usr/local/bin/zsh
+
+    # Ensure there is a Z history file
+    touch ~/.z
+  fi
+}
+
+dot () {
+  # Set macOS defaults
+  $DOTFILES_HOME/macos/set-defaults.sh
+  
+  # Install homebrew if needed
+  $DOTFILES_HOME/homebrew/install.sh 2>&1
+  
+  # Upgrade homebrew
+  # info "brew update"
+  # brew update >/dev/null 2>&1
+  
+  # Run Homebrew through the Brewfile
+  if brew bundle check >/dev/null; then 
+    info "brew bundle is already up to date"
+  else
+    info "brew bundle"
+    brew bundle
+  fi
+  
+  # find the installers and run them iteratively
+  find . -name install.sh | while read installer ; do sh -c "${installer}" ; done
+}
+
+setup_gitconfig
+install_dotfiles
+install_preferences
+
+info "installing dependencies"
+if dot 2>&1
+then
+  success "dependencies installed"
+else
+  fail "error installing dependencies"
+fi
+
+setup_oh_my_zsh
+
+echo ''

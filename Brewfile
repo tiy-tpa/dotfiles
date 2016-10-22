@@ -6,6 +6,7 @@ tap 'caskroom/fonts'
 
 brew 'wget'
 brew 'zsh'
+brew 'dockutil'
 brew 'the_silver_searcher'
 brew 'coreutils'
 brew 'grc'
