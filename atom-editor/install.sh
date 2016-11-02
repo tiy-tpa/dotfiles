@@ -1,4 +1,4 @@
-if which apm; then
+if which apm >/dev/null 2>&1; then
   # star all the atom packages needed
   JSON=$(mktemp)
   apm stars --json > "${JSON}"
