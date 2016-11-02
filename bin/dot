@@ -186,22 +186,33 @@ setup_oh_my_zsh () {
 dot () {
   # Set macOS defaults
   $DOTFILES_HOME/macos/set-defaults.sh
-  
+
   # Install homebrew if needed
   $DOTFILES_HOME/homebrew/install.sh 2>&1
-  
+
   # Upgrade homebrew
   # info "brew update"
   # brew update >/dev/null 2>&1
-  
+
   # Run Homebrew through the Brewfile
-  if brew bundle check >/dev/null; then 
+  if brew bundle check >/dev/null; then
     info "brew bundle is already up to date"
   else
     info "brew bundle"
-    brew bundle
+    brew bundle --verbose
   fi
-  
+
+  # Login to apm if needed
+  if apm stars < /dev/null 2>/dev/null | grep -q "you'll need an API token"; then
+    echo "You will need to login to atom.io to generate a token"
+    echo "*MANUALL* copy the token after logging in and paste it below"
+    echo ""
+    echo ""
+    echo "Press enter to continue"
+    read
+    apm login
+  fi
+
   # find the installers and run them iteratively
   find . -name install.sh | while read installer ; do sh -c "${installer}" ; done
 }
