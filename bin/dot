@@ -199,7 +199,7 @@ dot () {
     info "brew bundle is already up to date"
   else
     info "brew bundle"
-    brew bundle --verbose
+    brew bundle
   fi
 
   # Login to apm if needed
