@@ -1,3 +1,5 @@
+export DOTFILES_HOME=$HOME/.dotfiles
+
 if ! gem list | grep -q bundler; then
   info 'Installing bundler'
   gem install bundler
