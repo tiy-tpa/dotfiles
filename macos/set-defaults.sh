@@ -19,10 +19,6 @@ defaults write com.apple.Finder FXPreferredViewStyle Nlsv
 # Show the ~/Library folder.
 chflags nohidden ~/Library
 
-# Set a blazingly fast keyboard repeat rate
-defaults write NSGlobalDomain KeyRepeat -int 1
-defaults write NSGlobalDomain InitialKeyRepeat -int 10
-
 # Set the Finder prefs for showing a few different volumes on the Desktop.
 defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool true
 defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool true
@@ -44,20 +40,6 @@ defaults write com.apple.print.PrintingPrefs "Quit When Finished" -bool true
 # Disable smart quotes as they’re annoying when typing code
 defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
 
-sudo pmset -a hibernatemode 0
-
-# Remove the sleep image file to save disk space
-if [ -f /private/var/vm/sleepimage ]; then
-  sudo rm -f /private/var/vm/sleepimage
-
-  # Create a zero-byte file instead…
-  sudo touch -f /private/var/vm/sleepimage
-
-  # ...and make sure it can’t be rewritten
-  sudo chflags -f uchg /private/var/vm/sleepimage
-fi
-
-
 # Save screenshots to the desktop
 defaults write com.apple.screencapture location -string "${HOME}/Desktop"
 
@@ -69,7 +51,6 @@ defaults write com.apple.screencapture disable-shadow -bool true
 
 # Finder: show all filename extensions
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true
-
 
 # Enable AirDrop over Ethernet and on unsupported Macs running Lion
 defaults write com.apple.NetworkBrowser BrowseAllInterfaces -bool true
