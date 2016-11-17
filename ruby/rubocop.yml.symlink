@@ -1,0 +1,314 @@
+AllCops:
+    DisabledByDefault: true
+    TargetRubyVersion: 2.0
+    DisplayStyleGuide: true
+    ExtraDetails: false
+
+Style/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: space
+  EnforcedStyleForEmptyBraces: no_space
+
+Style/TrailingCommaInLiteral:
+  EnforcedStyleForMultiline: no_comma
+
+Style/HashSyntax:
+  EnforcedStyle: ruby19
+
+Style/TrailingWhitespace:
+  Enabled: true
+
+Style/EmptyLines:
+  Enabled: true
+
+Style/IndentationConsistency:
+  Enabled: true
+
+Lint/BlockAlignment:
+  Enabled: true
+
+Lint/DefEndAlignment:
+  Enabled: true
+
+Style/AlignArray:
+  Enabled: true
+
+Style/AlignHash:
+  Enabled: true
+
+Style/AlignParameters:
+  Enabled: true
+
+Style/AndOr:
+  Enabled: true
+
+Style/BlockEndNewline:
+  Enabled: true
+
+Style/BlockDelimiters:
+  Enabled: true
+
+Style/ClassAndModuleCamelCase:
+  Enabled: true
+
+Style/ClassMethods:
+  Enabled: true
+
+Style/ClassVars:
+  Enabled: true
+
+Style/CommentIndentation:
+  Enabled: true
+
+Style/ConditionalAssignment:
+  Enabled: true
+
+Style/ConstantName:
+  Enabled: true
+
+Style/DefWithParentheses:
+  Enabled: true
+
+Style/PreferredHashMethods:
+  Enabled: true
+
+Style/EachForSimpleLoop:
+  Enabled: true
+
+Style/ElseAlignment:
+  Enabled: true
+
+Style/EmptyElse:
+  Enabled: true
+
+Style/EmptyCaseCondition:
+  Enabled: true
+
+Style/EmptyLineBetweenDefs:
+  Description: 'Use empty lines between defs.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#empty-lines-between-methods'
+  Enabled: true
+
+Style/EmptyLines:
+  Enabled: true
+
+Style/EmptyLinesAroundClassBody:
+  Enabled: true
+
+Style/EmptyLiteral:
+  Description: 'Prefer literals to Array.new/Hash.new/String.new.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#literal-array-hash'
+  Enabled: true
+
+Style/ExtraSpacing:
+  Enabled: true
+
+Style/FileName:
+  Enabled: true
+
+Style/GuardClause:
+  Description: 'Check for conditionals that can be replaced with guard clauses'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-nested-conditionals'
+  Enabled: true
+
+Style/IndentationWidth:
+  Description: 'Use 2 spaces for indentation.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#spaces-indentation'
+  Enabled: true
+
+Style/LeadingCommentSpace:
+  Description: 'Comments should start with a space.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#hash-space'
+  Enabled: true
+
+Style/MultilineArrayBraceLayout:
+  Description: >-
+                 Checks that the closing brace in an array literal is
+                 either on the same line as the last array element, or
+                 a new line.
+  Enabled: true
+
+Style/MultilineBlockChain:
+  Description: 'Avoid multi-line chains of blocks.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#single-line-blocks'
+  Enabled: true
+
+Style/MultilineBlockLayout:
+  Description: 'Ensures newlines after multiline block do statements.'
+  Enabled: true
+
+Style/MultilineHashBraceLayout:
+  Description: >-
+                 Checks that the closing brace in a hash literal is
+                 either on the same line as the last hash element, or
+                 a new line.
+  Enabled: true
+
+Style/MultilineIfThen:
+  Description: 'Do not use then for multi-line if/unless.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-then'
+  Enabled: true
+
+Style/NegatedIf:
+  Description: >-
+                 Favor unless over if for negative conditions
+                 (or control flow or).
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#unless-for-negatives'
+  Enabled: true
+
+Style/NegatedWhile:
+  Description: 'Favor until over while for negative conditions.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#until-for-negatives'
+  Enabled: true
+
+
+Style/NestedTernaryOperator:
+  Description: 'Use one expression per branch in a ternary operator.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-nested-ternary'
+  Enabled: true
+
+
+Style/NilComparison:
+  Description: 'Prefer x.nil? to x == nil.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#predicate-methods'
+  Enabled: true
+
+
+Style/NonNilCheck:
+  Description: 'Checks for redundant nil checks.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-non-nil-checks'
+  Enabled: true
+
+
+Style/NumericLiterals:
+  Description: >-
+                 Add underscores to large numeric literals to improve their
+                 readability.
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#underscores-in-numerics'
+  Enabled: true
+
+Style/NumericLiteralPrefix:
+  Description: 'Use smallcase prefixes for numeric literals.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#numeric-literal-prefixes'
+  Enabled: true
+
+Style/PredicateName:
+  Description: 'Check the names of predicate methods.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#bool-methods-qmark'
+  Enabled: true
+
+Style/RedundantSelf:
+  Description: "Don't use self where it's not needed."
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-self-unless-required'
+  Enabled: true
+
+Style/SelfAssignment:
+  Enabled: true
+
+Style/SpaceBeforeComment:
+  Description: >-
+                 Checks for missing space between code and a comment on the
+                 same line.
+  Enabled: true
+
+Style/SpaceAroundOperators:
+  Description: 'Use a single space around operators.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#spaces-operators'
+  Enabled: true
+
+Style/SpaceAroundOperators:
+  Description: 'Use a single space around operators.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#spaces-operators'
+  Enabled: true
+
+Style/SpaceInsideArrayPercentLiteral:
+  Description: 'No unnecessary additional spaces between elements in %i/%w literals.'
+  Enabled: true
+
+Style/SpaceInsidePercentLiteralDelimiters:
+  Description: 'No unnecessary spaces inside delimiters of %i/%w/%x literals.'
+  Enabled: true
+
+Style/SymbolLiteral:
+  Description: 'Use plain symbols instead of string symbols when possible.'
+  Enabled: true
+
+Style/SymbolProc:
+  Description: 'Use symbols as procs instead of blocks when possible.'
+  Enabled: true
+
+Style/Tab:
+  Description: 'No hard tabs.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#spaces-indentation'
+  Enabled: true
+
+Style/TrailingWhitespace:
+  Description: 'Avoid trailing whitespace.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-trailing-whitespace'
+  Enabled: true
+
+Style/UnlessElse:
+  Description: >-
+                 Do not use unless with else. Rewrite these with the positive
+                 case first.
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-else-with-unless'
+  Enabled: true
+
+Style/WhenThen:
+  Description: 'Use when x then ... for one-line cases.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#one-line-cases'
+  Enabled: true
+
+
+Style/WordArray:
+  Description: 'Use %w or %W for arrays of words.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-w'
+  Enabled: true
+
+Lint/AssignmentInCondition:
+  Description: "Don't use assignment in conditions."
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#safe-assignment-in-condition'
+  Enabled: true
+
+Lint/DefEndAlignment:
+  Description: 'Align ends corresponding to defs correctly.'
+  Enabled: true
+
+
+Lint/DuplicateMethods:
+  Description: 'Check for duplicate method definitions.'
+  Enabled: true
+
+Lint/DuplicatedKey:
+  Description: 'Check for duplicate keys in hash literals.'
+  Enabled: true
+
+Lint/ElseLayout:
+  Description: 'Check for odd code arrangement in an else block.'
+  Enabled: true
+
+
+Lint/ImplicitStringConcatenation:
+  Description: >-
+                 Checks for adjacent string literals on the same line, which
+                 could better be represented as a single string literal.
+  Enabled: true
+
+Lint/PercentStringArray:
+  Description: >-
+                 Checks for unwanted commas and quotes in %w/%W literals.
+  Enabled: true
+
+Lint/ShadowedException:
+  Description: >-
+                  Avoid rescuing a higher level exception
+                  before a lower level exception.
+  Enabled: true
+
+Lint/UnusedMethodArgument:
+  Description: 'Checks for unused method arguments.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#underscore-unused-vars'
+  Enabled: true
+
+Lint/UnreachableCode:
+  Description: 'Unreachable code.'
+  Enabled: true
